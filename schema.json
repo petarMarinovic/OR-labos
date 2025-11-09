@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "localhost:63342/schema.json",
+  "title": "OR muzički albumi",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "Naziv": {
+        "type": "string"
+      },
+      "Žanr": {
+        "type": "string"
+      },
+      "Format": {
+        "type": "string"
+      },
+      "Godina": {
+        "type": "number"
+      },
+      "Pjesme": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "Redni_broj": {
+              "type": "number"
+            },
+            "Naziv_pjesme": {
+              "type": "string"
+            },
+            "Trajanje_minute": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "Redni_broj",
+            "Naziv_pjesme",
+            "Trajanje_minute"
+          ]
+        }
+      },
+      "Zemlja": {
+        "type": "string"
+      },
+      "Izvođač": {
+        "type": "string"
+      },
+      "Broj_pjesama": {
+        "type": "number"
+      },
+      "Trajanje_min": {
+        "type": "number"
+      },
+      "Platinum_status": {
+        "type": "boolean"
+      },
+      "Izdavačka_kuća": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "Naziv",
+      "Žanr",
+      "Format",
+      "Godina",
+      "Pjesme",
+      "Zemlja",
+      "Izvođač",
+      "Broj_pjesama",
+      "Trajanje_min",
+      "Platinum_status",
+      "Izdavačka_kuća"
+    ]
+  }
+}

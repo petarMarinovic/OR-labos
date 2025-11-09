@@ -1,0 +1,66 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+tr:hover {
+    background-color: #f5f5f5;
+}
+form {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+input, select, button {
+    padding: 8px;
+    margin-right: 10px;
+}
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #45a049;
+}
+.download-links {
+    margin: 20px 0;
+}
+.download-links a {
+    padding: 8px 15px;
+    background-color: #008CBA;
+    color: white;
+    text-decoration: none;
+    margin-right: 10px;
+    border-radius: 3px;
+}
+.download-links a:hover {
+    background-color: #007399;
+}
+.songs-list {
+            font-size: 0.85em;
+            color: #555;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+.song-item {
+    padding: 2px 0;
+    border-bottom: 1px solid #ddd;
+}

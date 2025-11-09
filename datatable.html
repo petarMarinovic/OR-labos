@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pregled albuma</title>
+    <meta name="description" content="Tablični prikaz albuma s filtriranjem">
+    <meta name="author" content="Petar">
+    <link rel="stylesheet" href="../css/datatable.css">
+</head>
+<body>
+
+    <h1>Glazbeni albumi</h1>
+
+    <form id="filter-form">
+        <input type="text" id="search" placeholder="pretrazi"/>
+        <select id="attribute">
+            <option value="">Svi atributi</option>
+            <option value="izvodjac">Izvođač</option>
+            <option value="zanr">Žanr</option>
+           <option value="fromat">Format</option>
+        </select>
+        <button type="submit">Filtriraj</button>
+        <button type="reset" id="reset">Poništi</button>
+    </form>
+
+     <div class="download-links">
+        <h3>Preuzmi filtrirane podatke:</h3>
+        <a href="#" id="download-csv">CSV</a>
+        <a href="#" id="download-json">JSON</a>
+    </div>
+
+    <h3>Opis Atributa</h3>
+
+<h4>Atributi albuma</h4>
+    <p>Naziv albuma - Službeni naziv muzičkog albuma, Izvođač - Ime izvođača ili benda ,Godina - Godina izdavanja albuma
+   , Žanr - Glazbeni žanr ,Broj pjesama - Ukupan broj pjesama na albumu ,Trajanje albuma (min) - Ukupno trajanje u minutama ,Izdavačka kuća - Ime izdavačke kuće
+  , Zemlja - Zemlja porijekla izvođača ,Platinum status - Je li album dobio platinum certifikaciju (true/false)
+    ,Format - Format izdanja (Vinyl, CD, Digital)</p>
+
+
+<h4>Atributi pjesma</h4>
+
+  <p>
+      Naziv pjesme - Službeni naziv pjesme ,Trajanje pjesme (min) - Trajanje pjesme u minutama (decimalni broj)
+      ,Redni broj - Redni broj pjesme na albumu
+  </p>
+
+    <table id="albumTable">
+        <thead></thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+
+        const form = document.getElementById('filter-form');
+        const reset = document.getElementById('reset');
+        const tableHead = document.querySelector('#albumTable thead');
+        const tableBody = document.querySelector('#albumTable tbody')
+        const downloadCsv = document.getElementById('download-csv');
+        const downloadJson = document.getElementById('download-json');
+
+
+        let currentSearch = "";
+        let currentAttribute = "";
+
+        async function fetchAlbums(search = "", attribute = ""){
+            try {
+
+                const params = new URLSearchParams();
+                if (search) params.append("search", search);
+                if (attribute) params.append("attribute", attribute);
+
+                const res = await fetch(`http://localhost:8000/albums?${params}`);
+                const data = await res.json();
+
+                currentSearch = search;
+                currentAttribute = attribute;
+                renderTable(data);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+
+        function renderTable(data){
+            tableHead.innerHTML = "";
+            tableBody.innerHTML ="";
+
+            if(!data || data.length ===0) {
+                tableBody.innerHTML = "<tr><td>Nema rezultata</td></tr>";
+                return;
+            }
+
+            const headers = Object.keys(data[0]);
+            const headerRow = document.createElement("tr");
+            headers.forEach((h)=> {
+                const th = document.createElement("th");
+                th.textContent = h;
+                headerRow.appendChild(th);
+            });
+            tableHead.appendChild(headerRow);
+
+            data.forEach(row => {
+                const tr = document.createElement("tr");
+                headers.forEach((h)=>{
+                    const td = document.createElement("td");
+
+                    if(h === "songs" && Array.isArray(row[h])) {
+
+                        if(row[h].length > 0)
+                        {
+
+                            let songsHTML = '<div class="songs-list">';
+                            row[h].forEach((song) => {
+                                songsHTML +=
+                                    `<div class="song-item">${song.redni_broj}. ${song.naziv_pjesme} (${song.trajanje_minute} min)</div>`;
+                            })
+                            songsHTML += '</div>';
+                            td.innerHTML = songsHTML;
+
+                        }else {
+                            td.textContent = "Nema pjesama";
+                        }
+
+                    }else {
+
+                            td.textContent= row[h];
+
+                    }
+
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+        }
+
+        form.addEventListener("submit", (e)=>{
+            e.preventDefault();
+            const search = document.getElementById("search").value;
+            const attribute = document.getElementById("attribute").value;
+            fetchAlbums(search, attribute);
+        });
+
+
+        reset.addEventListener("click", () => {
+         document.getElementById("search").value = "";
+         document.getElementById("attribute").value = "";
+         fetchAlbums();
+        });
+
+        downloadCsv.addEventListener("click", (e) => {
+            e.preventDefault();
+            const params = new URLSearchParams();
+            if (currentSearch) params.append("search", currentSearch);
+            if (currentAttribute) params.append("attribute", currentAttribute);
+            window.open(`http://localhost:8000/albums/export/csv?${params}`, "_blank");
+        })
+
+        downloadJson.addEventListener("click", (e) => {
+            e.preventDefault();
+            const params = new URLSearchParams();
+            if (currentSearch) params.append("search", currentSearch);
+            if (currentAttribute) params.append("attribute", currentAttribute);
+            window.open(`http://localhost:8000/albums/export/json?${params}`, "_blank");
+        })
+
+        fetchAlbums();
+
+    </script>
+
+</body>
+</html>
